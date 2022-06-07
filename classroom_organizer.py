@@ -1,4 +1,5 @@
 from roster import student_roster
+import itertools
 
 
 class ClassroomOrganizer:
@@ -18,3 +19,25 @@ class ClassroomOrganizer:
             if student['favorite_subject'] == subject:
                 selected_students.append((student['name'], subject))
         return selected_students
+
+    def __iter__(self):
+        self.index = 0
+        return self
+
+    def __next__(self):
+        if self.index < len(self.sorted_names):
+            name = self.sorted_names[self.index]
+            self.index += 1
+            return name
+        else:
+            raise StopIteration
+
+    def get_two_student_combo(self):
+        return list(itertools.combinations(iter(self.sorted_names), 2))
+
+    def get_math_science_fav_students(self):
+        math_fav_students = self.get_students_with_subject('Math')
+        science_fav_students = self.get_students_with_subject('Science')
+        math_and_science_list = itertools.chain(
+            iter(math_fav_students), iter(science_fav_students))
+        return list(itertools.combinations(iter(math_and_science_list), 4))
